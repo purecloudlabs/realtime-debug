@@ -13,8 +13,7 @@
   "content_scripts": [ {
         "js": [ "content.js" ],
         "matches": [
-            "https://localhost:*/*",
-            "https://apps.inindca.com/*",
+            "https://*.inindca.com/*",
             "https://*.inintca.com/*",
             "https://*.ininsca.com/*"
         ]

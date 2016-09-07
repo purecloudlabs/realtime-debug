@@ -5,8 +5,11 @@ Contributing, developing:
   - `npm install`
   - `npm test` - runs linter and builds extension
 
-Running (for testing):
-    google-chrome --load-and-launch-app=/path/to/this/directory
+Install:
+ - https://chrome.google.com/webstore/detail/cgcbglankfpindfcechphhmcnoljajkl
 
+Use on localhost:
+ - Clone repo and ensure localhost is listed in manifest, then install from
+ chrome://extensions
 
 Extension based on [getScreenMedia](https://github.com/HenrikJoreteg/getScreenMedia)

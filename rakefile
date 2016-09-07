@@ -17,7 +17,7 @@ task :default do
     end
 
     Dir.chdir('extension') do
-        sh 'zip -r ../bin/chrome-purecloud-screenshare.zip *'
+        sh 'zip -r ../bin/purecloud-realtime-debug.zip *'
     end
 
     sh '/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --pack-extension=extension ' + pemFile

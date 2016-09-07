@@ -1,0 +1,33 @@
+task :default do
+    if !Dir.exists?( "bin")
+        Dir.mkdir "bin"
+    end
+
+    if File.exists?( "temp.pem")
+        FileUtils.rm "temp.pem"
+    end
+
+    pemFile = ''
+    if File.exists?('pem/chrome.pem')
+        pemFile = '--pack-extension-key=pem/chrome.pem'
+    end
+
+    if File.exists?( "bin/purecloud-realtime-debug.crx")
+        FileUtils.rm "bin/purecloud-realtime-debug.crx"
+    end
+
+    Dir.chdir('extension') do
+        sh 'zip -r ../bin/chrome-purecloud-screenshare.zip *'
+    end
+
+    sh '/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --pack-extension=extension ' + pemFile
+    FileUtils.mv "extension.crx", "bin/purecloud-realtime-debug.crx"
+
+    if !Dir.exists?( "pem")
+        Dir.mkdir "pem"
+    end
+
+    if File.exists?("extension.pem")
+        FileUtils.mv "extension.pem", "pem/chrome.pem"
+    end
+end

@@ -1,0 +1,18 @@
+{
+  "name": "realtime-debug",
+  "version": "1.0.0",
+  "description": "This is an extension which implements the extension-side of [getscreenmedia](https://github.com/henrikjoreteg/getscreenmedia).",
+  "main": "index.js",
+  "scripts": {
+    "test": "node_modules/.bin/semistandard && rake"
+  },
+  "author": "Xander Dumaine",
+  "license": "MIT",
+  "pre-push": [
+      "test"
+  ],
+  "devDependencies": {
+    "pre-push": "^0.1.1",
+    "semistandard": "^9.0.0"
+  }
+}

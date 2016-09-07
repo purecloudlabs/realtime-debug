@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "PureCloud Realtime Debugger",
+    "description": "The title of the application, displayed in the web store."
+  },
+  "appDesc": {
+    "message": "Helper utility for debugging realtime in PureCloud",
+    "description":"The description of the application, displayed in the web store."
+  }
+}

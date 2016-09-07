@@ -1,13 +1,18 @@
 'use-strict';
 
 (() => {
-  let filter = /.*/;
+  let filter = null;
   let level = 'log';
-  window.debugRealtime = (_filter, _level) => {
+  let opts = {};
+  window.debugRealtime = (_filter, _level, _opts) => {
     if (_filter && typeof _filter.test === 'function') {
       filter = _filter;
     } else {
       console.warn('Failed to set debug filter - must be regexp or object with function `test`');
+    }
+
+    if (_opts && _opts.absoluteTime) {
+      opts.absoluteTime = _opts.absoluteTime;
     }
 
     if (['error', 'warn', 'info', 'log', 'debug'].indexOf(_level) > -1) {
@@ -74,13 +79,15 @@
     if (!shouldLog(stanza)) {
       return;
     }
-    const time = lastStanzaTime ? new Date().getTime() - lastStanzaTime : 0;
+    const now = new Date();
+    const time = lastStanzaTime ? now.getTime() - lastStanzaTime : 0;
+    const formattedTime = opts.absoluteTime ? now.toISOString() : formatDelta(time);
     const css = direction === '⬆' ? 'color:red' : 'color:green';
 
     if (['presence', 'iq', 'message'].indexOf(stanza.name) > -1 ||
           /<iq|<message|<presence/.test(stanza)) {
       const prettyStanza = prettyPrintXml(stanza.toString());
-      console[level](`[realtime] %c${direction}`, css, formatDelta(time), prettyStanza);
+      console[level](`[realtime] %c${direction}`, css, formattedTime, prettyStanza);
     } else {
       console[level]('unknown stanza', stanza);
     }

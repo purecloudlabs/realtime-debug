@@ -2,11 +2,16 @@
 
 (() => {
   let filter = null;
+  const savedRegExpString = window.localStorage.debugRealtime;
+  if (savedRegExpString) {
+    filter = new RegExp(savedRegExpString.substr(1, savedRegExpString.length - 2));
+  }
   let level = 'log';
   let opts = {};
   window.debugRealtime = (_filter, _level, _opts) => {
     if (_filter && typeof _filter.test === 'function') {
       filter = _filter;
+      window.localStorage.debugRealtime = filter;
     } else {
       console.warn('Failed to set debug filter - must be regexp or object with function `test`');
     }

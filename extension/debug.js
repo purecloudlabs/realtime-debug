@@ -16,8 +16,10 @@
       console.warn('Failed to set debug filter - must be regexp or object with function `test`');
     }
 
-    if (_opts && _opts.absoluteTime) {
-      opts.absoluteTime = _opts.absoluteTime;
+    opts.absoluteTime = _opts && _opts.absoluteTime;
+    opts.filterRealtime = _opts && _opts.filterRealtime;
+    if (typeof opts.filterRealtime === 'string') {
+      opts.filterRealtime = new RegExp(opts.filterRealtime);
     }
 
     if (['error', 'warn', 'info', 'log', 'debug'].indexOf(_level) > -1) {
@@ -78,6 +80,14 @@
     return filter.test(stanza);
   };
 
+  const shouldSend = (stanza) => {
+    if (!opts.filterRealtime) {
+      return true;
+    }
+
+    return !opts.filterRealtime.test(stanza);
+  };
+
   let lastStanzaTime = null;
 
   const logStanza = (direction, stanza) => {
@@ -128,8 +138,12 @@
 
     const send = instance._server.send.bind(instance._server);
     instance._server.send = function (stanza) {
-      logStanza('⬆', stanza);
-      send(...arguments);
+      if (shouldSend(stanza)) {
+        logStanza('⬆', stanza);
+        send(...arguments);
+      } else {
+        console[level]('dropped', stanza);
+      }
     };
   });
 })();

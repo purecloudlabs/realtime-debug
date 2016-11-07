@@ -8,12 +8,14 @@ Contributing, developing:
 Install:
  - https://chrome.google.com/webstore/detail/cgcbglankfpindfcechphhmcnoljajkl
 
-Use on localhost:
+Install for localhost:
  - Clone repo and ensure localhost is listed in manifest, then install from
  chrome://extensions
 
-Extension based on [getScreenMedia](https://github.com/HenrikJoreteg/getScreenMedia)
-
+ Use:
+```javascript
+debugRealtime(/jabber:client/, 'log', { absoluteTime: true, filterRealtime: /transport-info/ });
+```
 
 ```javascript
 /// log jabber:client stanzas, filtering none, mangling ice transports

@@ -31,7 +31,7 @@ debugRealtime(/jabber:client/, 'log',
       }, {
         regexp: /ufrag=".*?"/,
         mangle: (s) => {
-          return s.toString().replace(/ufrag=".*?"/g, 'ufrag="123a"').replace(/pwd="/g, 'pwd="asd').replace(/:..<\/finger/g, '00:</finger');
+          return s.toString().replace(/ufrag=".*?"/g, 'ufrag="123a"').replace(/pwd="/g, 'pwd="asd').replace(/:..<\/finger/g, ':00</finger');
         }
       }]
 })

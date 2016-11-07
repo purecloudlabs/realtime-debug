@@ -97,9 +97,8 @@
     if (!mangler) {
       return stanza;
     }
-    console[level]('mangling', stanza);
     const mangled = mangler.mangle(stanza);
-    console[level]('mangled', mangled);
+    console[level]('mangled', stanza, mangled);
     return mangled;
   };
 

@@ -18,6 +18,7 @@
 
     opts.absoluteTime = _opts && _opts.absoluteTime;
     opts.filterRealtime = _opts && _opts.filterRealtime;
+    opts.mangleStanzas = _opts && _opts.mangleStanzas;
     if (typeof opts.filterRealtime === 'string') {
       opts.filterRealtime = new RegExp(opts.filterRealtime);
     }
@@ -88,6 +89,20 @@
     return !opts.filterRealtime.test(stanza);
   };
 
+  const maybeMangle = (stanza) => {
+    if (!opts.mangleStanzas || !opts.mangleStanzas.length) {
+      return stanza;
+    }
+    const mangler = opts.mangleStanzas.find((m) => m.regexp.test(stanza));
+    if (!mangler) {
+      return stanza;
+    }
+    console[level]('mangling', stanza);
+    const mangled = mangler.mangle(stanza);
+    console[level]('mangled', mangled);
+    return mangled;
+  };
+
   let lastStanzaTime = null;
 
   const logStanza = (direction, stanza) => {
@@ -139,6 +154,7 @@
     const send = instance._server.send.bind(instance._server);
     instance._server.send = function (stanza) {
       if (shouldSend(stanza)) {
+        stanza = maybeMangle(stanza);
         logStanza('⬆', stanza);
         send(...arguments);
       } else {

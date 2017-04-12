@@ -8,7 +8,18 @@
   }
   let level = 'log';
   let opts = {};
+  let realtimeLoaded = false;
+  let failedToLoadRealtime = false;
+
   window.debugRealtime = (_filter, _level, _opts) => {
+    if (failedToLoadRealtime) {
+      return console.error('failed to load realtime. cannot debug');
+    }
+
+    if (!realtimeLoaded) {
+      console.warn('realtime is not loaded yet');
+    }
+
     if (_filter && typeof _filter.test === 'function') {
       filter = _filter;
       window.localStorage.debugRealtime = filter;
@@ -127,8 +138,9 @@
   const realtime = new Promise((resolve, reject) => {
     let count = 0;
     const findRealtime = () => {
-      if (count > 30) {
+      if (count > 100) {
         console.debug('failed to load realtime');
+        failedToLoadRealtime = true;
         return reject();
       }
       if (window.Realtime && window.Realtime._instances) {
@@ -160,5 +172,7 @@
         console[level]('dropped', stanza);
       }
     };
+
+    realtimeLoaded = true;
   });
 })();

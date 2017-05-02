@@ -17,6 +17,15 @@ Install for localhost:
 debugRealtime(/jabber:client/, 'log', { absoluteTime: true, filterRealtime: /transport-info/ });
 ```
 
+Handy Method for triggering ice failures:
+```javascript
+debugRealtime(/jabber:client/, 'log', { thawIce: true });
+// now ice candidates sent over realtime will get mangled causing ice failures
+
+// use refreeze to cause ice mangling to stop after a short period of time (i.e., simulate failure/retry)
+debugRealtime(/jabber:client/, 'log', { thawIce: true, refreeze: 4000 });
+```
+
 ```javascript
 /// log jabber:client stanzas, filtering none, mangling ice transports
 debugRealtime(/jabber:client/, 'log',

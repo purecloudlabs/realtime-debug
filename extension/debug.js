@@ -10,8 +10,23 @@
   let opts = {};
   let realtimeLoaded = false;
   let failedToLoadRealtime = false;
+  let thawTime = null;
 
   window.debugRealtime = (_filter, _level, _opts) => {
+    if (_opts.thawIce && !_opts.mangleStanzas) {
+      _opts.mangleStanzas = [{
+        regexp: /ip=".*?"/,
+        mangle: (s) => {
+          return s.toString().replace(/ip=".*?"/g, 'ip="123.123.123.123"').replace(/rel-addr=".*?"/g, 'rel-addr="123.123.123.123"');
+        }
+      }, {
+        regexp: /ufrag=".*?"/,
+        mangle: (s) => {
+          return s.toString().replace(/ufrag=".*?"/g, 'ufrag="123a"').replace(/pwd="/g, 'pwd="asd').replace(/:..<\/finger/g, ':00</finger');
+        }
+      }];
+      return window.debugRealtime(_filter, _level, _opts);
+    }
     if (failedToLoadRealtime) {
       return console.error('failed to load realtime. cannot debug');
     }
@@ -30,6 +45,9 @@
     opts.absoluteTime = _opts && _opts.absoluteTime;
     opts.filterRealtime = _opts && _opts.filterRealtime;
     opts.mangleStanzas = _opts && _opts.mangleStanzas;
+    opts.thawIce = _opts && _opts.thawIce;
+    opts.refreeze = _opts && _opts.refreeze;
+    thawTime = null;
     if (typeof opts.filterRealtime === 'string') {
       opts.filterRealtime = new RegExp(opts.filterRealtime);
     }
@@ -104,9 +122,19 @@
     if (!opts.mangleStanzas || !opts.mangleStanzas.length) {
       return stanza;
     }
+    // Refreeze turns off stanza mangling after a time
+    if (opts.refreeze && thawTime && new Date().getTime() - thawTime > (opts.refreeze || 1000)) {
+      console.log('refreezing!');
+      opts.mangleStanzas = null;
+      return stanza;
+    }
     const mangler = opts.mangleStanzas.find((m) => m.regexp.test(stanza));
     if (!mangler) {
       return stanza;
+    }
+    if (opts.refreeze) {
+      console.log('setting thaw time');
+      thawTime = new Date().getTime();
     }
     const mangled = mangler.mangle(stanza);
     console[level]('mangled', stanza, mangled);

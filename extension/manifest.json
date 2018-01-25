@@ -15,9 +15,9 @@
         "matches": [
             "https://*.inindca.com/*",
             "https://*.inintca.com/*",
-            "https://*.ininsca.com/*",
             "https://*.mypurecloud.com/*"
-        ]
+        ],
+        "all_frames": true
   }],
   "web_accessible_resources": [
       "debug.js"

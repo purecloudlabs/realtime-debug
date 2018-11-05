@@ -24,6 +24,10 @@ debugRealtime(/jabber:client/, 'log', { thawIce: true });
 
 // use refreeze to cause ice mangling to stop after a short period of time (i.e., simulate failure/retry)
 debugRealtime(/jabber:client/, 'log', { thawIce: true, refreeze: 4000 });
+
+
+/// use slow ice to simulate slow or delayed ice, instead of a failure
+debugRealtime(/jabber:client/, 'log', { slowIce: 1000 });
 ```
 
 ```javascript

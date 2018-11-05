@@ -27,6 +27,24 @@
       }];
       return window.debugRealtime(_filter, _level, _opts);
     }
+
+    if (_opts.slowIce && !_opts.mangleStanzas) {
+      _opts.mangleStanzas = [{
+        regexp: /ip=".*?"/,
+        mangle: async (s) => {
+          await new Promise(resolve => setTimeout(resolve, _opts.slowIce));
+          return s;
+        }
+      }, {
+        regexp: /ufrag=".*?"/,
+        mangle: async (s) => {
+          await new Promise(resolve => setTimeout(resolve, _opts.slowIce));
+          return s;
+        }
+      }];
+      return window.debugRealtime(_filter, _level, _opts);
+    }
+
     if (failedToLoadRealtime) {
       return console.error('failed to load realtime. cannot debug');
     }
@@ -118,7 +136,7 @@
     return !opts.filterRealtime.test(stanza);
   };
 
-  const maybeMangle = (stanza) => {
+  const maybeMangle = async (stanza) => {
     if (!opts.mangleStanzas || !opts.mangleStanzas.length) {
       return stanza;
     }
@@ -136,7 +154,7 @@
       console.log('setting thaw time');
       thawTime = new Date().getTime();
     }
-    const mangled = mangler.mangle(stanza);
+    const mangled = await mangler.mangle(stanza);
     console[level]('mangled', stanza, mangled);
     return mangled;
   };
@@ -191,9 +209,9 @@
     });
 
     const send = instance._server.send.bind(instance._server);
-    instance._server.send = function (stanza) {
+    instance._server.send = async function (stanza) {
       if (shouldSend(stanza)) {
-        stanza = maybeMangle(stanza);
+        stanza = await maybeMangle(stanza);
         logStanza('⬆', stanza);
         send(...arguments);
       } else {

@@ -13,6 +13,7 @@
   "content_scripts": [ {
         "js": [ "content.js" ],
         "matches": [
+            "https://localhost:*/*",
             "https://*.inindca.com/*",
             "https://*.inintca.com/*",
             "https://*.mypurecloud.com/*"
